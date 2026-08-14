@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}AI Workout Assistant – {{ app_title }}{% endblock %}
+{% block page_title %}🤖 AI Workout Assistant{% endblock %}
+
+{% block content %}
+
+{% if not granite_configured %}
+<div class="banner banner--warning mb-4">
+  ⚠️ <strong>IBM Granite is not configured.</strong>
+  Add <code>IBM_GRANITE_API_KEY</code> and <code>IBM_WATSONX_PROJECT_ID</code> to your <code>.env</code> file, then restart the server.
+  <a href="{{ url_for('settings') }}">View Settings →</a>
+</div>
+{% endif %}
+
+<div class="ai-layout">
+
+  <!-- Left: Input panel -->
+  <div class="ai-panel card">
+    <div class="card-header">
+      <h2 class="card-title">Workout Preferences</h2>
+    </div>
+    <div class="card-body">
+      <form id="aiForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="aiGoal">Fitness Goal</label>
+          <select id="aiGoal" class="form-select" required>
+            {% for g in goals %}<option value="{{ g }}">{{ g }}</option>{% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aiExperience">Experience Level</label>
+          <select id="aiExperience" class="form-select" required>
+            {% for e in experience_levels %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aiDays">Days per Week <span class="text-muted">(1–7)</span></label>
+          <input type="number" id="aiDays" class="form-input" min="1" max="7" value="3" required />
+          <span class="form-error" id="aiDaysError"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aiDuration">Session Duration <span class="text-muted">(15–120 min)</span></label>
+          <input type="number" id="aiDuration" class="form-input" min="15" max="120" value="30" required />
+          <span class="form-error" id="aiDurationError"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aiEquipment">Available Equipment</label>
+          <select id="aiEquipment" class="form-select" required>
+            {% for e in equipment_options %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aiNotes">Additional Instructions <span class="text-muted">(optional)</span></label>
+          <textarea id="aiNotes" class="form-textarea" rows="3" placeholder="e.g. Avoid jumping exercises, focus on upper body…"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-ai w-full" id="aiGenerateBtn" {% if not granite_configured %}disabled{% endif %}>
+          🤖 Generate AI Workout Plan
+        </button>
+
+        <div id="aiStatus" class="ai-status mt-3 hidden"></div>
+
+        <p class="text-muted text-xs mt-4">
+          ⚠️ AI-generated workout suggestions are for general fitness information only and are NOT a substitute for professional medical advice.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right: Output panel -->
+  <div class="ai-output card">
+    <div class="card-header">
+      <h2 class="card-title">Generated Workout Plan</h2>
+      <div class="card-header-actions" id="aiOutputActions" style="display:none">
+        <button class="btn btn-success btn-sm" id="btnSavePlan">💾 Save Plan</button>
+        <button class="btn btn-secondary btn-sm" id="btnAddToPlanner">📅 Add to Planner</button>
+      </div>
+    </div>
+    <div class="card-body" id="aiOutputBody">
+      <div class="ai-placeholder">
+        <div class="ai-placeholder-icon">🤖</div>
+        <p>Fill in your preferences and click <strong>Generate AI Workout Plan</strong> to get a personalised workout from IBM Granite.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ai_assistant.js') }}"></script>
+{% endblock %}

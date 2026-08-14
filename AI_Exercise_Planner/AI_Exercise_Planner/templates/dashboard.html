@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – {{ app_title }}{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- Stat cards -->
+  <div class="stat-grid">
+    <div class="stat-card stat-card--blue">
+      <div class="stat-icon">📋</div>
+      <div class="stat-body">
+        <div class="stat-value">{{ total_exercises }}</div>
+        <div class="stat-label">Exercises in Library</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card--amber">
+      <div class="stat-icon">📅</div>
+      <div class="stat-body">
+        <div class="stat-value">{{ progress.total }}</div>
+        <div class="stat-label">Planned This Week</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card--green">
+      <div class="stat-icon">✅</div>
+      <div class="stat-body">
+        <div class="stat-value">{{ progress.completed }}</div>
+        <div class="stat-label">Completed This Week</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card--purple">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-body">
+        <div class="stat-value">{{ progress.percentage }}%</div>
+        <div class="stat-label">Completion Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly overview card -->
+  <div class="card mt-6">
+    <div class="card-header">
+      <h2 class="card-title">Weekly Progress</h2>
+    </div>
+    <div class="card-body">
+      <div class="progress-row mb-2">
+        <span class="progress-label">{{ progress.completed }} / {{ progress.total }} exercises completed</span>
+        <span class="progress-pct">{{ progress.percentage }}%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width: {{ progress.percentage }}%"></div>
+      </div>
+      {% if progress.total_duration_min > 0 %}
+      <p class="text-muted mt-2 text-sm">
+        Duration: {{ progress.completed_duration_min }} min completed of {{ progress.total_duration_min }} min planned
+      </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Daily breakdown -->
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2 class="card-title">Day-by-Day Breakdown</h2>
+    </div>
+    <div class="card-body p-0">
+      <div class="day-breakdown">
+        {% for day in breakdown %}
+        <div class="day-tile {% if day.total == 0 %}day-tile--empty{% elif day.completed == day.total %}day-tile--done{% else %}day-tile--partial{% endif %}">
+          <div class="day-tile-name">{{ day.day[:3] }}</div>
+          <div class="day-tile-count">{{ day.completed }}/{{ day.total }}</div>
+          <div class="day-tile-bar">
+            <div class="day-tile-fill" style="width:{{ day.percentage }}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="card mt-4">
+    <div class="card-header"><h2 class="card-title">Quick Actions</h2></div>
+    <div class="card-body">
+      <div class="quick-actions">
+        <a href="{{ url_for('exercises') }}" class="btn btn-primary">➕ Add Exercise</a>
+        <a href="{{ url_for('planner') }}" class="btn btn-secondary">📅 Open Planner</a>
+        <a href="{{ url_for('ai_assistant') }}" class="btn btn-ai {% if not granite_configured %}btn-ai--disabled{% endif %}">🤖 AI Workout</a>
+        <a href="{{ url_for('quick_workout') }}" class="btn btn-warning">⚡ Quick Workout</a>
+        <a href="{{ url_for('progress') }}" class="btn btn-success">📊 Full Progress</a>
+      </div>
+      {% if not granite_configured %}
+      <div class="banner banner--warning mt-4">
+        ⚠️ <strong>IBM Granite not configured.</strong>
+        Set <code>IBM_GRANITE_API_KEY</code> and <code>IBM_WATSONX_PROJECT_ID</code> in your <code>.env</code> file to enable AI features.
+        <a href="{{ url_for('settings') }}">View Settings →</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

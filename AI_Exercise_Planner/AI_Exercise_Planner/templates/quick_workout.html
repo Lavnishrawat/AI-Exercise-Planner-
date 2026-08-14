@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Quick Workout – {{ app_title }}{% endblock %}
+{% block page_title %}⚡ Quick Workout{% endblock %}
+
+{% block content %}
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="card-title">Quick Workout Generator</h2>
+    <div class="card-header-actions">
+      <button class="btn btn-primary btn-sm" id="btnGenerate">🎲 Generate New</button>
+      <button class="btn btn-success btn-sm" id="btnMarkAll">✔ Mark All Done</button>
+      <button class="btn btn-secondary btn-sm" id="btnAddToday">📅 Add to Today</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <p class="text-muted text-sm mb-4">Randomly selects 3–5 exercises from your library for a quick session.</p>
+    <div id="quickWorkoutContent">
+      <div class="spinner-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/quick_workout.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "exercises": [
+    {
+      "id": "e355b064-e6fd-4ec8-9145-902371093cb1",
+      "name": "lunges",
+      "category": "Cardio",
+      "sets": 3,
+      "reps": 10,
+      "duration": 15,
+      "difficulty": "Beginner",
+      "equipment": "No Equipment",
+      "notes": ""
+    }
+  ],
+  "weekly_plan": {
+    "Monday": [],
+    "Tuesday": [],
+    "Wednesday": [],
+    "Thursday": [],
+    "Friday": [],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "ai_plans": [],
+  "settings": {
+    "theme": "light"
+  }
+}

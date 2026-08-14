@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{{ app_title }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo">🏋</span>
+      <div class="sidebar-title">
+        <span class="sidebar-title-main">AI Exercise</span>
+        <span class="sidebar-title-sub">Planner</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="{{ url_for('exercises') }}" class="nav-link {% if request.endpoint == 'exercises' %}active{% endif %}"><span class="nav-icon">📋</span> Exercise Library</a></li>
+      <li><a href="{{ url_for('planner') }}" class="nav-link {% if request.endpoint == 'planner' %}active{% endif %}"><span class="nav-icon">📅</span> Weekly Planner</a></li>
+      <li><a href="{{ url_for('ai_assistant') }}" class="nav-link {% if request.endpoint == 'ai_assistant' %}active{% endif %}"><span class="nav-icon">🤖</span> AI Assistant</a></li>
+      <li><a href="{{ url_for('quick_workout') }}" class="nav-link {% if request.endpoint == 'quick_workout' %}active{% endif %}"><span class="nav-icon">⚡</span> Quick Workout</a></li>
+      <li><a href="{{ url_for('progress') }}" class="nav-link {% if request.endpoint == 'progress' %}active{% endif %}"><span class="nav-icon">📊</span> Progress</a></li>
+      <li><a href="{{ url_for('settings') }}" class="nav-link {% if request.endpoint == 'settings' %}active{% endif %}"><span class="nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+  </nav>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main content wrapper -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <h1 class="topbar-title">{% block page_title %}{{ app_title }}{% endblock %}</h1>
+      <div class="topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+    </header>
+
+    <main class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="page-footer">
+      <p>⚠️ AI-generated suggestions are for general fitness information only and are not a substitute for professional medical advice.</p>
+    </footer>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Modal backdrop (shared) -->
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

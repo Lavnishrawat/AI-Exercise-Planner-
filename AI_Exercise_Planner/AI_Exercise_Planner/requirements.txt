@@ -1,0 +1,18 @@
+# AI Exercise Planner (Web) – Python Dependencies
+#
+# Install all dependencies with:
+#   pip install -r requirements.txt
+#
+# Python 3.9+ required.
+
+# Web framework
+Flask>=3.0.0
+
+# IBM watsonx.ai / Granite API communication
+requests>=2.28.0
+
+# Load credentials from .env file (recommended)
+python-dotenv>=1.0.0
+
+# Production WSGI server (optional, recommended for deployment)
+gunicorn>=21.2.0

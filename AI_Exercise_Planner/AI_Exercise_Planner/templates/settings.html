@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Settings – {{ app_title }}{% endblock %}
+{% block page_title %}⚙️ Settings{% endblock %}
+
+{% block content %}
+
+<!-- IBM Granite status -->
+<div class="card mb-4">
+  <div class="card-header"><h2 class="card-title">IBM Granite Configuration</h2></div>
+  <div class="card-body">
+    <div class="settings-status-grid">
+      <div class="settings-status-item">
+        <span class="settings-status-key">IBM_GRANITE_API_KEY</span>
+        <span class="badge {% if api_key_set %}badge--green{% else %}badge--red{% endif %}">
+          {% if api_key_set %}✔ Set{% else %}✗ Not set{% endif %}
+        </span>
+      </div>
+      <div class="settings-status-item">
+        <span class="settings-status-key">IBM_WATSONX_PROJECT_ID</span>
+        <span class="badge {% if project_id_set %}badge--green{% else %}badge--red{% endif %}">
+          {% if project_id_set %}✔ Set{% else %}✗ Not set{% endif %}
+        </span>
+      </div>
+      <div class="settings-status-item">
+        <span class="settings-status-key">IBM_GRANITE_ENDPOINT</span>
+        <span class="settings-status-value code">{{ granite_endpoint }}</span>
+      </div>
+      <div class="settings-status-item">
+        <span class="settings-status-key">IBM_GRANITE_MODEL</span>
+        <span class="settings-status-value code">{{ granite_model }}</span>
+      </div>
+      <div class="settings-status-item">
+        <span class="settings-status-key">GRANITE_MAX_NEW_TOKENS</span>
+        <span class="settings-status-value">{{ max_tokens }}</span>
+      </div>
+      <div class="settings-status-item">
+        <span class="settings-status-key">AI Features Ready</span>
+        <span class="badge {% if granite_configured %}badge--green{% else %}badge--red{% endif %}">
+          {% if granite_configured %}Yes ✔{% else %}No – credentials required{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="banner banner--info mt-4">
+      <strong>How to configure:</strong>
+      <ol class="mt-2 ml-4">
+        <li>Copy <code>.env.example</code> to <code>.env</code> in the project folder.</li>
+        <li>Set <code>IBM_GRANITE_API_KEY</code> and <code>IBM_WATSONX_PROJECT_ID</code>.</li>
+        <li>Restart the Flask server.</li>
+      </ol>
+      <p class="mt-2">See <strong>README.md</strong> for full instructions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Data management -->
+<div class="card mb-4">
+  <div class="card-header"><h2 class="card-title">Data Management</h2></div>
+  <div class="card-body">
+    <p class="text-muted text-sm mb-3">Data file: <code>{{ data_file }}</code></p>
+    <div class="btn-row">
+      <button class="btn btn-danger" id="btnClearData">⚠️ Clear ALL Data</button>
+    </div>
+    <p class="text-muted text-xs mt-2">This permanently deletes all exercises, plans, and saved AI plans.</p>
+  </div>
+</div>
+
+<!-- About -->
+<div class="card">
+  <div class="card-header"><h2 class="card-title">About</h2></div>
+  <div class="card-body">
+    <p><strong>{{ app_title }}</strong> v{{ app_version }}</p>
+    <p class="text-muted text-sm">Built with Python 3 · Flask · IBM Granite via watsonx.ai</p>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('btnClearData').addEventListener('click', async () => {
+  if (!confirm('This will permanently delete ALL exercises, plans, and AI plans.\n\nAre you sure?')) return;
+  try {
+    const r = await fetch('/api/settings/clear-data', { method: 'POST' });
+    const d = await r.json();
+    if (d.success) { showToast('All data cleared.', 'success'); }
+    else { showToast('Failed to clear data.', 'error'); }
+  } catch (e) { showToast('Network error.', 'error'); }
+});
+</script>
+{% endblock %}

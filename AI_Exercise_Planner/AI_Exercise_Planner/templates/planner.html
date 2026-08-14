@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Weekly Planner – {{ app_title }}{% endblock %}
+{% block page_title %}📅 Weekly Planner{% endblock %}
+
+{% block topbar_actions %}
+<button class="btn btn-ghost btn-sm" id="btnResetWeek">🔄 Reset Completions</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- Day tabs -->
+<div class="day-tabs" id="dayTabs">
+  {% for day in days %}
+  <button class="day-tab {% if loop.first %}active{% endif %}" data-day="{{ day }}">
+    <span class="day-tab-short">{{ day[:3] }}</span>
+    <span class="day-tab-full">{{ day }}</span>
+    <span class="day-tab-badge" id="badge-{{ day }}">0</span>
+  </button>
+  {% endfor %}
+</div>
+
+<!-- Active day panel -->
+<div class="card mt-4" id="dayPanel">
+  <div class="card-header">
+    <h2 class="card-title" id="dayPanelTitle">Monday</h2>
+    <button class="btn btn-primary btn-sm" id="btnAddToPlan">➕ Add Exercise</button>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table" id="planTable">
+        <thead>
+          <tr>
+            <th width="36"></th>
+            <th>Exercise</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Duration</th>
+            <th>Notes</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="planTableBody">
+          <tr><td colspan="7" class="text-center text-muted py-6">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="planEmptyState" class="empty-state hidden">
+      <div class="empty-icon">📅</div>
+      <p>No exercises planned for this day.</p>
+      <button class="btn btn-primary" id="btnAddToPlanEmpty">➕ Add Exercise to This Day</button>
+    </div>
+  </div>
+  <div class="card-footer" id="daySummary"></div>
+</div>
+
+<!-- Add to Plan Modal -->
+<div class="modal" id="planModal" role="dialog" aria-modal="true" aria-labelledby="planModalTitle">
+  <div class="modal-header">
+    <h2 class="modal-title" id="planModalTitle">Add Exercise to Day</h2>
+    <button class="modal-close" id="planModalClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+    <form id="planForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="planExerciseSelect">Exercise <span class="required">*</span></label>
+        <select id="planExerciseSelect" class="form-select">
+          <option value="">— Select an exercise —</option>
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="planSets">Sets</label>
+          <input type="number" id="planSets" class="form-input" min="0" value="3" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="planReps">Reps</label>
+          <input type="number" id="planReps" class="form-input" min="0" value="10" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="planDuration">Duration (min)</label>
+          <input type="number" id="planDuration" class="form-input" min="0" value="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="planNotes">Notes</label>
+        <textarea id="planNotes" class="form-textarea" rows="2"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" id="planCancelBtn">Cancel</button>
+    <button class="btn btn-primary" id="planSaveBtn">Add to Day</button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/planner.js') }}"></script>
+{% endblock %}

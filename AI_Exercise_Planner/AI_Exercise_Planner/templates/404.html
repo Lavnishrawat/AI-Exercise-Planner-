@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found – {{ app_title }}{% endblock %}
+{% block page_title %}404{% endblock %}
+{% block content %}
+<div class="empty-state" style="margin-top:4rem">
+  <div class="empty-icon" style="font-size:4rem">🔍</div>
+  <h2>Page Not Found</h2>
+  <p class="text-muted">The page you're looking for doesn't exist.</p>
+  <a href="/" class="btn btn-primary mt-4">← Back to Dashboard</a>
+</div>
+{% endblock %}

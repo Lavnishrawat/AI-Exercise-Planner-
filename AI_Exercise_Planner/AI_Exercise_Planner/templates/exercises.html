@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Exercise Library – {{ app_title }}{% endblock %}
+{% block page_title %}📋 Exercise Library{% endblock %}
+
+{% block topbar_actions %}
+<button class="btn btn-primary btn-sm" id="btnAddExercise">➕ Add Exercise</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- Search + filter bar -->
+<div class="toolbar card mb-4">
+  <div class="toolbar-inner">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="form-input" placeholder="🔍 Search exercises…" autocomplete="off" />
+    </div>
+    <div class="filter-wrap">
+      <select id="filterCategory" class="form-select">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+      <select id="filterDifficulty" class="form-select">
+        <option value="">All Difficulties</option>
+        {% for d in difficulties %}
+        <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise table -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table" id="exerciseTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Duration</th>
+            <th>Difficulty</th>
+            <th>Equipment</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="exerciseTableBody">
+          <tr id="loadingRow"><td colspan="8" class="text-center text-muted py-6">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-icon">🏋️</div>
+      <p>No exercises found. Add your first exercise!</p>
+      <button class="btn btn-primary" id="btnAddExerciseEmpty">➕ Add Exercise</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Modal -->
+<div class="modal" id="exerciseModal" role="dialog" aria-modal="true" aria-labelledby="exerciseModalTitle">
+  <div class="modal-header">
+    <h2 class="modal-title" id="exerciseModalTitle">Add Exercise</h2>
+    <button class="modal-close" id="exerciseModalClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+    <form id="exerciseForm" novalidate>
+      <input type="hidden" id="exerciseId" />
+      <div class="form-grid">
+        <div class="form-group form-group--full">
+          <label class="form-label" for="exName">Exercise Name <span class="required">*</span></label>
+          <input type="text" id="exName" class="form-input" maxlength="100" required />
+          <span class="form-error" id="exNameError"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exCategory">Category</label>
+          <select id="exCategory" class="form-select">
+            {% for cat in categories %}<option value="{{ cat }}">{{ cat }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exDifficulty">Difficulty</label>
+          <select id="exDifficulty" class="form-select">
+            {% for d in difficulties %}<option value="{{ d }}">{{ d }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exEquipment">Equipment</label>
+          <select id="exEquipment" class="form-select">
+            {% for e in equipment_options %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exSets">Sets</label>
+          <input type="number" id="exSets" class="form-input" min="0" value="3" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exReps">Reps</label>
+          <input type="number" id="exReps" class="form-input" min="0" value="10" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="exDuration">Duration (min)</label>
+          <input type="number" id="exDuration" class="form-input" min="0" value="0" />
+        </div>
+        <div class="form-group form-group--full">
+          <label class="form-label" for="exNotes">Notes</label>
+          <textarea id="exNotes" class="form-textarea" rows="3" placeholder="Exercise instructions, tips…"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" id="exCancelBtn">Cancel</button>
+    <button class="btn btn-primary" id="exSaveBtn">Save Exercise</button>
+  </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+  <div class="modal-header">
+    <h2 class="modal-title" id="detailModalTitle">Exercise Details</h2>
+    <button class="modal-close" id="detailModalClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body" id="detailModalBody"></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" id="detailCloseBtn">Close</button>
+    <button class="btn btn-secondary" id="detailEditBtn">✏️ Edit</button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/exercises.js') }}"></script>
+{% endblock %}
